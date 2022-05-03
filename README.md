@@ -6,4 +6,4 @@ The marketplace for Semi-fungible tokens connects to a SIP 013 contract for tran
 
 ## Post Conditions
 
-Post conditions follow the [standard](https://github.com/Clarity-Innovation-Lab/stx-semi-fungible-token) and the Clarinet tests in this example contain helper functions to help test the burn/mint event pairs emitted when transferring SFTs.
+See the [SIP-013 Repo](https://github.com/Clarity-Innovation-Lab/stx-semi-fungible-token) for a descriptio of the novel mechanism for post conditions for semi-fungibles. The Clarinet tests in this example contain helper functions for testing the burn/mint event pairs emitted when transferring SFT's.
