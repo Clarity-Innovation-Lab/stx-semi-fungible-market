@@ -6,18 +6,22 @@ telemetry = true
 
 [contracts.thirteen-market]
 path = "contracts/thirteen-market.clar"
-depends_on = ["sip013-semi-fungible-token-trait", "commission-trait-sip10", "sip-010-trait-ft-standard"]
+depends_on = ["commission-trait-sip10", "sip-010-trait-ft-standard"]
 
 [contracts.thirteen-mint]
 path = "contracts/thirteen-mint.clar"
-depends_on = ["sip013-semi-fungible-token-trait", "commission-trait-sip10", "sip-010-trait-ft-standard"]
+depends_on = ["sip013-semi-fungible-token-trait", "sip013-transfer-many-trait", "commission-trait-sip10", "sip-010-trait-ft-standard"]
 
 [contracts.fourteen-mint]
 path = "contracts/fourteen-mint.clar"
-depends_on = ["sip013-semi-fungible-token-trait", "commission-trait-sip10", "sip-010-trait-ft-standard"]
+depends_on = ["sip013-semi-fungible-token-trait", "sip013-transfer-many-trait", "commission-trait-sip10", "sip-010-trait-ft-standard"]
 
 [contracts.sip013-semi-fungible-token-trait]
 path = "contracts/external/sip013-semi-fungible-token-trait.clar"
+depends_on = []
+
+[contracts.sip013-transfer-many-trait]
+path = "contracts/external/sip013-transfer-many-trait.clar"
 depends_on = []
 
 [contracts.commission-trait-sip10]

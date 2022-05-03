@@ -3,6 +3,7 @@
 ;; An alternative impl is the idea of a collection of collections - enabling multiple collections in the same contract.
 ;; (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
 (impl-trait .sip013-semi-fungible-token-trait.sip013-semi-fungible-token-trait)
+(impl-trait .sip013-transfer-many-trait.sip013-transfer-many-trait)
 
 (use-trait com10 .commission-trait-sip10.commission)
 (use-trait ft-trait .sip-010-trait-ft-standard.sip-010-trait)
@@ -94,10 +95,10 @@
 		(ok true)
 	)
 )
-(define-public (transfer-many (transfers (list 100 {token-id: uint, amount: uint, sender: principal, recipient: principal})))
+(define-public (transfer-many (transfers (list 200 {token-id: uint, amount: uint, sender: principal, recipient: principal})))
 	(fold transfer-many-iter transfers (ok true))
 )
-(define-public (transfer-many-memo (transfers (list 100 {token-id: uint, amount: uint, sender: principal, recipient: principal, memo: (buff 34)})))
+(define-public (transfer-many-memo (transfers (list 200 {token-id: uint, amount: uint, sender: principal, recipient: principal, memo: (buff 34)})))
 	(fold transfer-many-memo-iter transfers (ok true))
 )
 
