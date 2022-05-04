@@ -1,6 +1,18 @@
-;; Working example of SIP013 for editions or prints of artwork with internal marketplace functions
-;; Editions are interchangeable per artwork and max edition supply is 100 per artwork or 100 x COLLECTION_MAX_SUPPLY.
-;; An alternative impl is the idea of a collection of collections - enabling multiple collections in the same contract.
+;; SIP-013 SFT Contract
+;; Clarity Innovation Lab
+;; https://github.com/Clarity-Innovation-Lab/stx-semi-fungible-market
+;; Minting contract for SIP-013
+;; Main differences with SIP-009 contracts
+;; a) The transfer, mint and burn functions take an amount parameter
+;; b) To issue post conditions the transfer burns all of the senders tokens and then remints the balance
+;; c) To issue post conditions the transfer burns all of the recipients tokens and then remints the balance
+;; d) As in the Clarity book a taker's pricipal can optionally be supplied in the listing and if
+;; supplied the listing can only be baught by that principal
+;; e) listing provide a fungible token contract for the payment - the token can only be bought
+;; with the listings intended token - this token can also be native STX since the FT transfer
+;; can be supplied in a dummy SIP-010 contract which performs the STX transfer
+;; f) Supply of NFTs is capped at 100 per artwork or 100 x COLLECTION_MAX_SUPPLY.
+
 ;; (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
 (impl-trait .sip013-semi-fungible-token-trait.sip013-semi-fungible-token-trait)
 (impl-trait .sip013-transfer-many-trait.sip013-transfer-many-trait)
@@ -132,14 +144,16 @@
 ;; ------------------------------------------------------------------------------------------
 
 ;; -- Minting / Burning functions -----------------------------------------------------------
-(define-public (burn (token-id uint))
+(define-public (burn (token-id uint) (amount uint))
     (let (
             (owner (unwrap! (nft-get-owner? artwork-token {token-id: token-id, owner: contract-caller}) ERR_NOT_OWNER))
-			(balance (get-balance-uint token-id contract-caller))
+			(sender-balance (get-balance-uint token-id contract-caller))
         )
-        (map-delete token-balances {token-id: token-id, owner: owner})
-        (try! (ft-burn? edition-token balance owner))
-        (try! (nft-burn? artwork-token {token-id: token-id, owner: owner} owner))
+		(asserts! (<= amount sender-balance) ERR_INSUFFICIENT_BALANCE)
+		(set-balance token-id (- sender-balance amount) owner)
+		(map-set token-supplies token-id (- (unwrap-panic (get-total-supply token-id)) amount))
+        (try! (ft-burn? edition-token amount owner))
+        (and (is-eq amount sender-balance) (try! (nft-burn? artwork-token {token-id: token-id, owner: owner} owner)))
 		(ok token-id)
     )
 )

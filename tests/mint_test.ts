@@ -81,6 +81,87 @@ Clarinet.test({
 });
 
 Clarinet.test({
+  name: "Mint Test - Ensure user can't burn more than they own",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { deployer, phil, client, events } = getWalletsAndClient(
+      chain,
+      accounts
+    );
+    let block = chain.mineBlock([
+      client.setAdminMintPass(phil.address, deployer.address),
+      client.adminMint(1, 100, phil.address, phil.address),
+      client.burn(1, 101, phil.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(true);
+    block.receipts[1].result.expectOk().expectUint(1);
+    block.receipts[2].result.expectErr().expectUint(ErrCode.ERR_INSUFFICIENT_BALANCE);
+    client.getBalance(1, phil.address).result.expectOk().expectUint(100);
+    client.getTotalSupply(1).result.expectOk().expectUint(100);
+    client.getOverallSupply().result.expectOk().expectUint(100);
+
+    events.expectEventCount(block.receipts[2].events, 'ft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'contract_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_burn_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'ft_burn_event', 0)
+  }
+});
+
+Clarinet.test({
+  name: "Mint Test - Ensure user can burn some they own",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { deployer, phil, client, events } = getWalletsAndClient(
+      chain,
+      accounts
+    );
+    let block = chain.mineBlock([
+      client.setAdminMintPass(phil.address, deployer.address),
+      client.adminMint(1, 100, phil.address, phil.address),
+      client.burn(1, 10, phil.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(true);
+    block.receipts[1].result.expectOk().expectUint(1);
+    block.receipts[2].result.expectOk().expectUint(1);
+    client.getBalance(1, phil.address).result.expectOk().expectUint(90);
+    client.getTotalSupply(1).result.expectOk().expectUint(90);
+    client.getOverallSupply().result.expectOk().expectUint(90);
+
+    events.expectEventCount(block.receipts[2].events, 'ft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'contract_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_burn_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'ft_burn_event', 1)
+  }
+});
+
+Clarinet.test({
+  name: "Mint Test - Ensure user can burn all they own",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    const { deployer, phil, client, events } = getWalletsAndClient(
+      chain,
+      accounts
+    );
+    let block = chain.mineBlock([
+      client.setAdminMintPass(phil.address, deployer.address),
+      client.adminMint(1, 100, phil.address, phil.address),
+      client.burn(1, 100, phil.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(true);
+    block.receipts[1].result.expectOk().expectUint(1);
+    block.receipts[2].result.expectOk().expectUint(1);
+    client.getBalance(1, phil.address).result.expectOk().expectUint(0);
+    client.getTotalSupply(1).result.expectOk().expectUint(0);
+    client.getOverallSupply().result.expectOk().expectUint(0);
+
+    events.expectEventCount(block.receipts[2].events, 'ft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_mint_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'contract_event', 0)
+    events.expectEventCount(block.receipts[2].events, 'nft_burn_event', 1)
+    events.expectEventCount(block.receipts[2].events, 'ft_burn_event', 1)
+  }
+});
+
+Clarinet.test({
   name: "Mint Test - Ensure constraints respected",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, client } = getWalletsAndClient(
@@ -97,6 +178,7 @@ Clarinet.test({
     block.receipts[2].result.expectErr().expectUint(ErrCode.ERR_COLLECTION_LIMIT_REACHED);
   }
 });
+
 Clarinet.test({
   name: "Mint Many Test - Ensure can mint same token twice to same recipient",
   async fn(chain: Chain, accounts: Map<string, Account>) {

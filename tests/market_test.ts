@@ -329,7 +329,7 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "Market Test - Ensure can't transfer if listed and can list if recipient of transfer",
+  name: "Market Test - Ensure original owner cannot transfer a listed asset",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     const { nftContract1Address, marketContractAddress, deployer, phil, daisy, bobby, commission1, tokenStacks, client, marketplaceClient } = getWalletsAndClient(chain, accounts);
 

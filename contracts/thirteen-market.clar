@@ -1,7 +1,19 @@
 
-;; Working example of a SIP013 marketplace contract.
-;; (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
-(use-trait nft-trait .sip013-semi-fungible-token-trait.sip013-semi-fungible-token-trait)
+;; SIP-013 Marketplace
+;; Clarity Innovation Lab
+;; https://github.com/Clarity-Innovation-Lab/stx-semi-fungible-market
+;; Marketplace contract compatible with SIP-013
+;; Main differences with conventional marketplace contracts
+;; a) The price is the price per unit of the semi fungible
+;; b) The amount provided when listing is the quantity of the owners tokens to list
+;; c) The buy calls the mint contracts transfer with the amount/quantity to transfer
+;; d) As in the Clarity book a taker's pricipal can optionally be supplied in the listing and if
+;; supplied the listing can only be baught by that principal
+;; e) listing provide a fungible token contract for the payment - the token can only be bought
+;; with the listings intended token - this token can also be native STX since the FT transfer
+;; can be supplied in a dummy SIP-010 contract which performs the STX transfer
+
+(use-trait sft-trait .sip013-semi-fungible-token-trait.sip013-semi-fungible-token-trait)
 (use-trait ft-trait .sip-010-trait-ft-standard.sip-010-trait)
 (use-trait commission-trait .commission-trait-sip10.commission)
 
@@ -47,7 +59,7 @@
 	(map-get? listings listing-id)
 )
 
-(define-public (list-in-token (nft-asset-contract <nft-trait>) (listing {token-id: uint, amount: uint, unit-price: uint, expiry: uint, taker: (optional principal)}) (com <commission-trait>) (payment-token <ft-trait>))
+(define-public (list-in-token (nft-asset-contract <sft-trait>) (listing {token-id: uint, amount: uint, unit-price: uint, expiry: uint, taker: (optional principal)}) (com <commission-trait>) (payment-token <ft-trait>))
     (let (
             (listing-id (var-get listing-nonce))
         )
@@ -63,7 +75,7 @@
     )
 )
 
-(define-public (unlist-in-token (listing-id uint) (nft-asset-contract <nft-trait>))
+(define-public (unlist-in-token (listing-id uint) (nft-asset-contract <sft-trait>))
 	(let (
 		    (listing (unwrap! (map-get? listings listing-id) ERR_UNKNOWN_LISTING))
 		    (maker (get maker listing))
@@ -75,11 +87,11 @@
 	)
 )
 
-(define-private (transfer-nft (token-contract <nft-trait>) (token-id uint) (amount uint) (sender principal) (recipient principal))
+(define-private (transfer-nft (token-contract <sft-trait>) (token-id uint) (amount uint) (sender principal) (recipient principal))
 	(contract-call? token-contract transfer token-id amount sender recipient)
 )
 
-(define-public (buy-in-token (listing-id uint) (nft-asset-contract <nft-trait>) (comm <commission-trait>) (token <ft-trait>))
+(define-public (buy-in-token (listing-id uint) (nft-asset-contract <sft-trait>) (comm <commission-trait>) (token <ft-trait>))
     (let 
         (
 		    (listing (unwrap! (map-get? listings listing-id) ERR_UNKNOWN_LISTING))

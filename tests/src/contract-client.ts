@@ -152,8 +152,8 @@ export class ContractClient {
     );
   }
 
-  burn(id: number, sender: string): Tx {
-    return Tx.contractCall(this.contractName, "burn", [types.uint(id)], sender);
+  burn(id: number, amount: number, sender: string): Tx {
+    return Tx.contractCall(this.contractName, "burn", [types.uint(id), types.uint(amount)], sender);
   }
 
   setApproved(id: number, operator: string, approved: boolean, sender: string
