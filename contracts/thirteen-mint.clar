@@ -6,12 +6,7 @@
 ;; a) The transfer, mint and burn functions take an amount parameter
 ;; b) To issue post conditions the transfer burns all of the senders tokens and then remints the balance
 ;; c) To issue post conditions the transfer burns all of the recipients tokens and then remints the balance
-;; d) As in the Clarity book a taker's pricipal can optionally be supplied in the listing and if
-;; supplied the listing can only be baught by that principal
-;; e) listing provide a fungible token contract for the payment - the token can only be bought
-;; with the listings intended token - this token can also be native STX since the FT transfer
-;; can be supplied in a dummy SIP-010 contract which performs the STX transfer
-;; f) Supply of NFTs is capped at 100 per artwork or 100 x COLLECTION_MAX_SUPPLY.
+;; d) Supply of NFTs is capped at 100 per artwork therefore total supply of the fungible is 100 x COLLECTION_MAX_SUPPLY
 
 ;; (impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
 (impl-trait .sip013-semi-fungible-token-trait.sip013-semi-fungible-token-trait)
