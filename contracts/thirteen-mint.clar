@@ -179,26 +179,6 @@
 )
 ;; ------------------------------------------------------------------------------------------
 
-;; -- Approval functions --------------------------------------------------
-(define-public (set-approved (token-id uint) (operator principal) (approved bool))
-    (let ((owner (unwrap! (nft-get-owner? artwork-token { token-id: token-id, owner: tx-sender }) ERR_NOT_OWNER)))
-        (asserts! (is-eq owner contract-caller) ERR_NOT_OWNER)
-        (ok (map-set approvals { owner: owner, operator: operator, id: token-id } approved))
-    )
-)
-(define-read-only (is-approved (token-id uint) (operator principal))
-    (let ((owner (unwrap! (nft-get-owner? artwork-token { token-id: token-id, owner: operator }) ERR_NOT_OWNER)))
-        (ok (is-owned-or-approved token-id operator owner))
-    )
-)
-(define-private (is-owned-or-approved (token-id uint) (operator principal) (owner principal))
-    (default-to
-        (is-eq owner operator)
-        (map-get? approvals {owner: owner, operator: operator, id: token-id})
-    )
-)
-;; ------------------------------------------------------------------------------------------
-
 ;; -- Admin functions --------------------------------------------------
 (define-public (set-administrator (new-administrator principal))
     (begin

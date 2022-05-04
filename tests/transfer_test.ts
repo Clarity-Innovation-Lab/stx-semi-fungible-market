@@ -470,22 +470,14 @@ Clarinet.test({
 });
 
 Clarinet.test({
-  name: "Transfer Test - can't transfer many to many in single tx with approvals",
+  name: "Transfer Test - can't transfer many if amount owned is exceeded",
   async fn(chain: Chain, accounts: Map<string, Account>) {
-    const { deployer, phil, daisy, hunter, client, events } = getWalletsAndClient(
+    const { deployer, phil, daisy, hunter, client, bobby } = getWalletsAndClient(
       chain,
       accounts
     );
     const entries = [
-      { 'token-id': 1, amount: 10, recipient: phil.address },
-      { 'token-id': 1, amount: 10, recipient: daisy.address },
-      { 'token-id': 1, amount: 10, recipient: hunter.address },
-      { 'token-id': 500, amount: 10, recipient: phil.address },
-      { 'token-id': 500, amount: 10, recipient: daisy.address },
-      { 'token-id': 500, amount: 10, recipient: hunter.address },
-      { 'token-id': 1000, amount: 10, recipient: phil.address },
-      { 'token-id': 1000, amount: 10, recipient: daisy.address },
-      { 'token-id': 1000, amount: 10, recipient: hunter.address }
+      { 'token-id': 1, amount: 100, recipient: phil.address }
     ]
     let block = chain.mineBlock([
       client.setAdminMintPass(deployer.address, deployer.address),
@@ -493,54 +485,15 @@ Clarinet.test({
     ]);
 
     const transferEntries = [
-      { 'token-id': 1, amount: 50, owner: phil.address, recipient: daisy.address },
-      { 'token-id': 1, amount: 50, owner: phil.address, recipient: hunter.address },
-      { 'token-id': 500, amount: 50, owner: daisy.address, recipient: phil.address },
-      { 'token-id': 500, amount: 50, owner: daisy.address, recipient: hunter.address },
-      { 'token-id': 1000, amount: 50, owner: hunter.address, recipient: phil.address },
-      { 'token-id': 1000, amount: 50, owner: hunter.address, recipient: daisy.address }
+      { 'token-id': 1, amount: 100, owner: phil.address, recipient: daisy.address },
+      { 'token-id': 1, amount: 20, owner: phil.address, recipient: hunter.address },
+      { 'token-id': 1, amount: 20, owner: phil.address, recipient: daisy.address },
+      { 'token-id': 1, amount: 20, owner: phil.address, recipient: bobby.address },
     ]
     block = chain.mineBlock([
-      client.setApproved(1, phil.address, true, daisy.address),
-      client.setApproved(500, phil.address, true, daisy.address),
-      client.setApproved(1000, phil.address, true, daisy.address),
-      client.setApproved(1, phil.address, true, hunter.address),
-      client.setApproved(500, phil.address, true, hunter.address),
-      client.setApproved(1000, phil.address, true, hunter.address),
       client.transferMany(transferEntries, phil.address),
     ]);
-    block.receipts[0].result.expectOk().expectBool(true);
-    block.receipts[1].result.expectOk().expectBool(true);
-    block.receipts[2].result.expectOk().expectBool(true);
-    block.receipts[3].result.expectOk().expectBool(true);
-    block.receipts[4].result.expectOk().expectBool(true);
-    block.receipts[5].result.expectOk().expectBool(true);
-    block.receipts[6].result.expectErr().expectUint(ErrCode.ERR_INSUFFICIENT_BALANCE);
-/**
-    client.getBalance(1, phil.address).result.expectOk().expectUint(0);
-    client.getBalance(1, daisy.address).result.expectOk().expectUint(1500);
-    client.getBalance(1, hunter.address).result.expectOk().expectUint(1500);
-    client.getBalance(500, phil.address).result.expectOk().expectUint(1500);
-    client.getBalance(500, daisy.address).result.expectOk().expectUint(0);
-    client.getBalance(500, hunter.address).result.expectOk().expectUint(1500);
-    client.getBalance(1000, phil.address).result.expectOk().expectUint(1500);
-    client.getBalance(1000, daisy.address).result.expectOk().expectUint(1500);
-    client.getBalance(1000, hunter.address).result.expectOk().expectUint(0);
-    client.getOverallBalance(phil.address).result.expectOk().expectUint(3000);
-    client.getOverallBalance(daisy.address).result.expectOk().expectUint(3000);
-    client.getOverallBalance(hunter.address).result.expectOk().expectUint(3000);
-    client.getTotalSupply(1).result.expectOk().expectUint(3000);
-    client.getTotalSupply(500).result.expectOk().expectUint(3000);
-    client.getTotalSupply(1000).result.expectOk().expectUint(3000);
-    client.getOverallSupply().result.expectOk().expectUint(9000);
-    events.expectEventCount(block.receipts[6].events, 'ft_mint_event', 0)
-    events.expectEventCount(block.receipts[6].events, 'ft_transfer_event', 6)
-    events.expectEventCount(block.receipts[6].events, 'nft_mint_event', 12)
-    events.expectEventCount(block.receipts[6].events, 'nft_transfer_event', 0)
-    events.expectEventCount(block.receipts[6].events, 'contract_event', 6) // the memo and the sft event are printed
-    events.expectEventCount(block.receipts[6].events, 'nft_burn_event', 12)
-    events.expectEventCount(block.receipts[6].events, 'ft_burn_event', 0)
-    **/
+    block.receipts[0].result.expectErr().expectUint(ErrCode.ERR_INSUFFICIENT_BALANCE);
   }
 });
 
