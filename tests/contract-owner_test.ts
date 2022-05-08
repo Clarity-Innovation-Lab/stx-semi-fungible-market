@@ -1,9 +1,4 @@
-import {
-  Clarinet,
-  Chain,
-  types,
-  Account
-} from "https://deno.land/x/clarinet@v0.28.1/index.ts";
+import { Clarinet, Chain, types, Account } from "https://deno.land/x/clarinet@v0.28.1/index.ts";
 import { assertEquals } from "https://deno.land/std@0.90.0/testing/asserts.ts";
 import { ContractClient, ErrCode } from "./src/contract-client.ts";
 import { CustomEventsClient } from "./src/custom-events-client.ts";
