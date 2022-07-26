@@ -53,7 +53,7 @@ const getWalletsAndClient = (
 
 Clarinet.test({
   name: "Mint Test - Ensure only admin mint pass can use admin-mint",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -82,7 +82,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure user can't burn more than they own",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -109,7 +109,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure user can burn some they own",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -136,7 +136,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure user can burn all they own",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -163,7 +163,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure constraints respected",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, client } = getWalletsAndClient(
       chain,
       accounts
@@ -181,7 +181,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Many Test - Ensure can mint same token twice to same recipient",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -205,7 +205,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure can mint lots of token 1 to hunter and bobby",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, bobby, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -240,7 +240,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure can't more than the limit per NFT",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, bobby, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -275,7 +275,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure Phil can mint (some of 1) to daisy and (some of 200) to hunter",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, hunter, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -309,7 +309,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Mint Test - Ensure Phil can mint (some of 1 and 200) to daisy and (some of 200 and 1) to hunter",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, hunter, client, events } = getWalletsAndClient(
       chain,
       accounts
