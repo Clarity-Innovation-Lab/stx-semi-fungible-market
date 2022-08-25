@@ -3,7 +3,7 @@ import {
   Chain,
   types,
   Account
-} from "https://deno.land/x/clarinet@v0.28.1/index.ts";
+} from "https://deno.land/x/clarinet@v0.31.1/index.ts";
 import { assertEquals } from "https://deno.land/std@0.90.0/testing/asserts.ts";
 import { ContractClient, ErrCode } from "./src/contract-client.ts";
 import { MarketplaceClient, MarketErrCode } from "./src/marketplace-client.ts";
@@ -569,7 +569,7 @@ Clarinet.test({
     events.expectEventCount(block.receipts[0].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[0].events, 'ft_transfer_event', 1)
     events.expectEventCount(block.receipts[0].events, 'ft_burn_event', 0)
-    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 2)
+    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 1)
     events.expectEventCount(block.receipts[0].events, 'nft_transfer_event', 0)
     events.expectEventCount(block.receipts[0].events, 'nft_burn_event', 2)
     events.expectEventCount(block.receipts[0].events, 'contract_event', 4)
@@ -628,7 +628,7 @@ Clarinet.test({
     events.expectEventCount(block.receipts[0].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[0].events, 'ft_transfer_event', 4) // xBTC to seller to commission ad the semi fung transfer
     events.expectEventCount(block.receipts[0].events, 'ft_burn_event', 0)
-    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 2)
+    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 1)
     events.expectEventCount(block.receipts[0].events, 'nft_transfer_event', 0)
     events.expectEventCount(block.receipts[0].events, 'nft_burn_event', 2)
     events.expectEventCount(block.receipts[0].events, 'contract_event', 4)

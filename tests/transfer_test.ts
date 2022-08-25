@@ -3,7 +3,7 @@ import {
   Chain,
   types,
   Account
-} from "https://deno.land/x/clarinet@v0.28.1/index.ts";
+} from "https://deno.land/x/clarinet@v0.31.1/index.ts";
 import { assertEquals } from "https://deno.land/std@0.90.0/testing/asserts.ts";
 import { ContractClient, ErrCode } from "./src/contract-client.ts";
 import { CustomEventsClient } from "./src/custom-events-client.ts";
@@ -57,7 +57,7 @@ const getWalletsAndClient = (
 // -- check simple constraints for the 4 variatios of transfer ---------------------
 Clarinet.test({
   name: "Transfer Test - Ensure can't transfer if no balance",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -71,7 +71,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure contract owner can't transfer if not owner",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -96,7 +96,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure can't transfer with memo if no balance or not owner",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -121,7 +121,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure contract owner can't transfer with memo if not owner",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const {deployer, phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -135,7 +135,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure can't transfer many if no balance",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const {phil, daisy, client } = getWalletsAndClient(
       chain,
       accounts
@@ -153,7 +153,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure can't transfer many with memo if insufficient funds",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client } = getWalletsAndClient( chain, accounts);
     const entriesMint = [
       { 'token-id': 10, amount: 25, recipient: phil.address },
@@ -180,7 +180,7 @@ Clarinet.test({
 // -- check transfers ---------------------
 Clarinet.test({
   name: "Transfer Test - Ensure can mint to Phil and Phil can transfer half to daisy",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -230,7 +230,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure can mint several tokens to Phil and Phil can transfer 3 at a time to daisy",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -287,7 +287,7 @@ Clarinet.test({
     // check the events make sense
     events.expectEventCount(block.receipts[0].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[0].events, 'ft_transfer_event', 3)
-    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 6)
+    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 5)
     events.expectEventCount(block.receipts[0].events, 'contract_event', 6) // the memo and the sft event are printed
     events.expectEventCount(block.receipts[0].events, 'nft_burn_event', 3)
     events.expectEventCount(block.receipts[0].events, 'ft_burn_event', 0)
@@ -296,7 +296,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - Ensure can't transfer more than you own in a transfer many",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -361,7 +361,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - transfer many to many in single tx",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, hunter, client, events } = getWalletsAndClient(
       chain,
       accounts
@@ -445,7 +445,7 @@ Clarinet.test({
 
     events.expectEventCount(block.receipts[0].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[0].events, 'ft_transfer_event', 2)
-    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 4)
+    events.expectEventCount(block.receipts[0].events, 'nft_mint_event', 3)
     events.expectEventCount(block.receipts[0].events, 'nft_transfer_event', 0)
     events.expectEventCount(block.receipts[0].events, 'contract_event', 2) // the memo and the sft event are printed
     events.expectEventCount(block.receipts[0].events, 'nft_burn_event', 2)
@@ -453,7 +453,7 @@ Clarinet.test({
 
     events.expectEventCount(block.receipts[1].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[1].events, 'ft_transfer_event', 2)
-    events.expectEventCount(block.receipts[1].events, 'nft_mint_event', 4)
+    events.expectEventCount(block.receipts[1].events, 'nft_mint_event', 3)
     events.expectEventCount(block.receipts[1].events, 'nft_transfer_event', 0)
     events.expectEventCount(block.receipts[1].events, 'contract_event', 2) // the memo and the sft event are printed
     events.expectEventCount(block.receipts[1].events, 'nft_burn_event', 2)
@@ -461,7 +461,7 @@ Clarinet.test({
 
     events.expectEventCount(block.receipts[2].events, 'ft_mint_event', 0)
     events.expectEventCount(block.receipts[2].events, 'ft_transfer_event', 2)
-    events.expectEventCount(block.receipts[2].events, 'nft_mint_event', 4)
+    events.expectEventCount(block.receipts[2].events, 'nft_mint_event', 3)
     events.expectEventCount(block.receipts[2].events, 'nft_transfer_event', 0)
     events.expectEventCount(block.receipts[2].events, 'contract_event', 2) // the memo and the sft event are printed
     events.expectEventCount(block.receipts[2].events, 'nft_burn_event', 2)
@@ -471,7 +471,7 @@ Clarinet.test({
 
 Clarinet.test({
   name: "Transfer Test - can't transfer many if amount owned is exceeded",
-  async fn(chain: Chain, accounts: Map<string, Account>) {
+  fn(chain: Chain, accounts: Map<string, Account>) {
     const { deployer, phil, daisy, hunter, client, bobby } = getWalletsAndClient(
       chain,
       accounts

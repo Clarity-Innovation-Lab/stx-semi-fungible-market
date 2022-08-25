@@ -80,7 +80,10 @@
         ;; token must be delisted in this contract before being transferred
 		(asserts! (<= amount sender-balance) ERR_INSUFFICIENT_BALANCE)
 		(try! (ft-transfer? edition-token amount sender recipient))
-		(try! (tag-nft-token-id {token-id: token-id, owner: sender}))
+		(if (< amount sender-balance) 
+			(try! (tag-nft-token-id {token-id: token-id, owner: sender}))
+			(try! (nft-burn? artwork-token {token-id: token-id, owner: sender} sender))
+		)
 		(try! (tag-nft-token-id {token-id: token-id, owner: recipient}))
 		(set-balance token-id (- sender-balance amount) sender)
 		(set-balance token-id (+ (get-balance-uint token-id recipient) amount) recipient)
